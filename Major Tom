@@ -1,0 +1,98 @@
+int x_axis1, y_axis1, xLow1 = 352, xHigh1 = 540, yLow1 = 352, yHigh1 = 583;
+int x_axis2, y_axis2, xLow2 = 352, xHigh2 = 540, yLow2 = 320, yHigh2 = 540;
+int xTotal1, yTotal1, xTotal2, yTotal2, x1, y1, x2, y2;
+
+String Xaxis1, Yaxis1;
+String Xaxis2, Yaxis2;
+
+String data, rssi; 
+
+void setup() 
+{
+ Serial.begin(9600);
+}
+
+void loop() 
+{
+ xTotal1 = 0;
+ yTotal1 = 0;
+ xTotal2 = 0;
+ yTotal2 = 0;
+for(int i = 0; i < 10; i++)
+{
+ x1 = analogRead(A0);
+ y1 = analogRead(A1);
+ x2 = analogRead(A2);
+ y2 = analogRead(A3);
+ xTotal1 = x1 + xTotal1;
+ yTotal1 = y1 + yTotal1;
+ xTotal2 = x2 + xTotal2;
+ yTotal2 = y2 + yTotal2;
+}
+  x_axis1 = xTotal1/10;
+  y_axis1 = yTotal1/10;
+  x_axis2 = xTotal2/10;
+  y_axis2 = yTotal2/10;
+  x_axis1 = map(x_axis1, xLow1, xHigh1, 0, 180) + 100;
+  y_axis1 = map(y_axis1, yLow1, yHigh1, 0, 180) + 100;
+  x_axis2 = map(x_axis2, xLow2, xHigh2, 0, 180) + 100;
+  y_axis2 = map(y_axis2, yLow2, yHigh2, 0, 180) + 100;
+   Xaxis1 = String(x_axis1);
+   Yaxis1 = String(y_axis1);
+   Xaxis2 = String(x_axis2);
+   Yaxis2 = String(y_axis2);
+    data = ("<" + Xaxis2 + "," + Xaxis2 + "," + Xaxis2 + "," + Xaxis2 + ">");
+     delay(300);
+     Serial.println(data);
+     Serial.flush();
+}
+
+void calibrate()
+{
+Serial.println("Joystick calibration begun");
+ xLow1 = 1023; xHigh1 = 0;
+ yLow1 = 1023; yHigh1 = 0;
+ xLow2 = 1023; xHigh2 = 0;
+ yLow2 = 1023; yHigh2 = 0;
+  for(int i = 0; i < 500; i++)
+  {
+   x_axis1 = analogRead(A0);
+    if (x_axis1 > xHigh1)
+    {
+     xHigh1 = x_axis1;
+    }
+     if (x_axis1 < xLow1)
+     {
+      xLow1 = x_axis1;
+     }
+      x_axis2 = analogRead(A2);
+      if (x_axis2 > xHigh2)
+      {
+       xHigh2 = x_axis2;
+      }
+       if (x_axis2 < xLow2)
+       {
+        xLow2 = x_axis2;
+       }
+   y_axis1 = analogRead(A1);  
+    if (y_axis1 > yHigh1)
+    {
+     yHigh1 = y_axis1;
+    }
+     if (y_axis1 < yLow1)
+     {
+      yLow1 = y_axis1;
+     }
+      y_axis2 = analogRead(A3);  
+      if (y_axis2 > yHigh2)
+      {
+       yHigh2 = y_axis2;
+      }
+       if (y_axis2 < yLow2)
+       {
+        yLow2 = y_axis2;
+       }
+    delay(10);
+   }
+   Serial.println("Done Calibrating");
+}
