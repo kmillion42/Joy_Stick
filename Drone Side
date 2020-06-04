@@ -1,0 +1,52 @@
+#include <Servo.h>
+
+String Data, DataOne, DataTwo, DataThree, DataFour, TerminatingChar;
+
+int Data1, Data2, Data3, Data4, rssi;
+
+Servo servoOne, servoTwo, servoThree, servoFour;
+
+void setup() 
+ {
+ Serial.begin(9600);
+ Serial.setTimeout(10);
+ servoOne.attach(3);
+ servoTwo.attach(5);
+ servoThree.attach(6);
+ servoFour.attach(9);
+ }
+
+
+void loop() 
+  {
+  if (Serial.available() > 0)
+  {
+  Data = Serial.readString();
+  Serial.println(Data);
+  delay(10);
+  TerminatingChar = Data.substring(16,17);
+  if(TerminatingChar == ">")
+   {
+    DataOne = (Data.substring(1,4));
+    Data1 = DataOne.toInt();
+    Data1 = (Data1 - 100);
+    servoOne.write(Data1);
+      DataTwo = (Data.substring(5,8));
+      Data2 = DataTwo.toInt();
+      Data2 = (Data2 - 100);
+      servoTwo.write(Data2);
+        DataThree = (Data.substring(9,12));
+        Data3 = DataThree.toInt();
+        Data3 = Data3 - 100;
+        servoThree.write(Data3);
+        delay(20);
+          DataFour = (Data.substring(13,16));
+          Data4 = DataFour.toInt();
+          Data4 = (Data4 - 100);
+          servoFour.write(Data4);
+             rssi = analogRead(A1);
+             rssi = (1023/rssi)*40;
+             Serial.println(rssi);
+   }
+  }
+ }
